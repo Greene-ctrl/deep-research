@@ -54,6 +54,14 @@ export async function GET(req: NextRequest) {
   const readableStream = new ReadableStream({
     start: async (controller) => {
       console.log("Client connected");
+      controller.enqueue(
+        encoder.encode(
+          `event: infor\ndata: ${JSON.stringify({
+            name: "deep-research",
+            version: "0.1.0",
+          })}\n\n`
+        )
+      );
 
       req.signal.addEventListener("abort", () => {
         console.log("Client disconnected");
@@ -76,9 +84,7 @@ export async function GET(req: NextRequest) {
         },
         promptOverrides,
         onMessage: (event, data) => {
-          if (event === "message") {
-            controller.enqueue(encoder.encode(data.text));
-          } else if (event === "progress") {
+          if (event === "progress") {
             console.log(
               `[${data.step}]: ${data.name ? `"${data.name}" ` : ""}${
                 data.status
@@ -91,6 +97,11 @@ export async function GET(req: NextRequest) {
             console.error(data);
             controller.close();
           }
+          controller.enqueue(
+            encoder.encode(
+              `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`
+            )
+          );
         },
       });
 
