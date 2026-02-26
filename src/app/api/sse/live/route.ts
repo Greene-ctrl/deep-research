@@ -34,9 +34,9 @@ export async function GET(req: NextRequest) {
   const language = getValueFromSearchParams("language") || "";
   const maxResult = Number(getValueFromSearchParams("maxResult")) || 5;
   const enableCitationImage =
-    getValueFromSearchParams("enableCitationImage") === "false";
+    getValueFromSearchParams("enableCitationImage") !== "false";
   const enableReferences =
-    getValueFromSearchParams("enableReferences") === "false";
+    getValueFromSearchParams("enableReferences") !== "false";
   const enableFileFormatResource =
     getValueFromSearchParams("enableFileFormatResource") === "true";
   let promptOverrides = {};

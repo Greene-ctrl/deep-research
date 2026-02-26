@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "next-themes";
 import { useGlobalStore } from "@/store/global";
 import { useSettingStore } from "@/store/setting";
+import { useGlobalFetchError } from "@/hooks/useGlobalFetchError";
 
 const Header = dynamic(() => import("@/components/Internal/Header"));
 const Setting = dynamic(() => import("@/components/Setting"));
@@ -22,6 +23,7 @@ const Knowledge = dynamic(() => import("@/components/Knowledge"));
 
 function Home() {
   const { t } = useTranslation();
+  useGlobalFetchError();
   const {
     openSetting,
     setOpenSetting,

@@ -1,26 +1,19 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { ANTHROPIC_BASE_URL } from "@/constants/urls";
+import { multiApiKeyPolling } from "@/utils/model";
 
 export const runtime = "edge";
-export const preferredRegion = [
-  "cle1",
-  "iad1",
-  "pdx1",
-  "sfo1",
-  "sin1",
-  "syd1",
-  "hnd1",
-  "kix1",
-];
+export const dynamic = "force-dynamic";
 
 const API_PROXY_BASE_URL = process.env.ANTHROPIC_API_BASE_URL || ANTHROPIC_BASE_URL || "https://api.anthropic.com";
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "";
 
 async function handler(req: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
   try {
     const { slug: path } = await params;
     let body;
     if (req.method.toUpperCase() !== "GET" && req.method.toUpperCase() !== "HEAD") {
-      body = await req.json().catch(() => undefined);
+      body = await req.clone().json().catch(() => undefined);
     }
     const searchParams = req.nextUrl.searchParams;
     const paramsStr = searchParams.toString();
@@ -28,13 +21,23 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
     let url = `${API_PROXY_BASE_URL}/${decodeURIComponent(path.join("/"))}`;
     if (paramsStr) url += `?${paramsStr}`;
 
+    const apiKey = multiApiKeyPolling(ANTHROPIC_API_KEY);
+
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.delete("authorization");
+    requestHeaders.delete("x-api-key");
+    requestHeaders.delete("x-goog-api-key");
+    requestHeaders.delete("api-key");
+
+    if (apiKey) {
+      requestHeaders.set("x-api-key", apiKey);
+      requestHeaders.set("anthropic-version", "2023-06-01");
+    }
+
     const payload: RequestInit = {
       method: req.method,
-      headers: {
-        "Content-Type": req.headers.get("Content-Type") || "application/json",
-        "x-api-key": req.headers.get("x-api-key") || "",
-        "anthropic-version": req.headers.get("anthropic-version") || "2023-06-01",
-      },
+      headers: requestHeaders,
+      cache: 'no-store',
     };
     if (body) payload.body = JSON.stringify(body);
 
@@ -42,7 +45,7 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
 
     const responseHeaders = new Headers();
     response.headers.forEach((value, key) => {
-      if (!["content-encoding", "transfer-encoding", "content-length"].includes(key.toLowerCase())) {
+      if (!["content-encoding", "transfer-encoding", "content-length", "connection", "keep-alive"].includes(key.toLowerCase())) {
         responseHeaders.set(key, value);
       }
     });

@@ -91,15 +91,13 @@ function useModelList() {
       let url = "";
       let headers: Record<string, string> = {};
 
-      const baseApiUrl = typeof window !== 'undefined' ? window.location.origin : '';
-
       if (provider === "google") {
         const { apiKey = "", apiProxy } = state;
         if (mode === "local" && !apiKey) return [];
         const key = multiApiKeyPolling(apiKey);
         url = mode === "local"
             ? completePath(apiProxy || GEMINI_BASE_URL, "/v1beta") + "/models"
-            : baseApiUrl + "/api/ai/google/v1beta/models";
+            : "/api/ai/google/v1beta/models";
         headers = {
           "x-goog-api-key": mode === "local" ? key : accessKey,
         };
@@ -109,7 +107,7 @@ function useModelList() {
         const apiKey = multiApiKeyPolling(openRouterApiKey);
         url = mode === "local"
             ? completePath(openRouterApiProxy || OPENROUTER_BASE_URL, "/api/v1") + "/models"
-            : baseApiUrl + "/api/ai/openrouter/v1/models";
+            : "/api/ai/openrouter/v1/models";
         headers = {
           authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
         };
@@ -119,7 +117,7 @@ function useModelList() {
         const apiKey = multiApiKeyPolling(openAIApiKey);
         url = mode === "local"
             ? completePath(openAIApiProxy || OPENAI_BASE_URL, "/v1") + "/models"
-            : baseApiUrl + "/api/ai/openai/v1/models";
+            : "/api/ai/openai/v1/models";
         headers = {
           authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
         };
@@ -129,7 +127,7 @@ function useModelList() {
         const apiKey = multiApiKeyPolling(anthropicApiKey);
         url = mode === "local"
             ? completePath(anthropicApiProxy || ANTHROPIC_BASE_URL, "/v1") + "/models"
-            : baseApiUrl + "/api/ai/anthropic/v1/models";
+            : "/api/ai/anthropic/v1/models";
         headers = {
           "x-api-key": mode === "local" ? apiKey : accessKey,
           "Anthropic-Version": "2023-06-01",
@@ -140,7 +138,7 @@ function useModelList() {
         const apiKey = multiApiKeyPolling(deepseekApiKey);
         url = mode === "local"
             ? completePath(deepseekApiProxy || DEEPSEEK_BASE_URL, "/v1") + "/models"
-            : baseApiUrl + "/api/ai/deepseek/v1/models";
+            : "/api/ai/deepseek/v1/models";
         headers = {
           authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
         };
@@ -150,7 +148,7 @@ function useModelList() {
         const apiKey = multiApiKeyPolling(xAIApiKey);
         url = mode === "local"
             ? completePath(xAIApiProxy || XAI_BASE_URL, "/v1") + "/models"
-            : baseApiUrl + "/api/ai/xai/v1/models";
+            : "/api/ai/xai/v1/models";
         headers = {
           authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
         };
@@ -160,7 +158,7 @@ function useModelList() {
         const apiKey = multiApiKeyPolling(mistralApiKey);
         url = mode === "local"
             ? completePath(mistralApiProxy || MISTRAL_BASE_URL, "/v1") + "/models"
-            : baseApiUrl + "/api/ai/mistral/v1/models";
+            : "/api/ai/mistral/v1/models";
         headers = {
           authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
         };
@@ -169,7 +167,7 @@ function useModelList() {
         if (mode === "local" && !openAICompatibleApiKey) return [];
         url = mode === "local"
             ? (openAICompatibleApiProxy ? completePath(openAICompatibleApiProxy, "/v1") + "/models" : "")
-            : baseApiUrl + "/api/ai/openaicompatible/v1/models";
+            : "/api/ai/openaicompatible/v1/models";
         if (!url) return [];
         const apiKey = multiApiKeyPolling(openAICompatibleApiKey);
         headers = {
@@ -178,13 +176,13 @@ function useModelList() {
       } else if (provider === "pollinations") {
         const { pollinationsApiProxy } = state;
         url = mode === "proxy"
-            ? baseApiUrl + "/api/ai/pollinations/models"
+            ? "/api/ai/pollinations/models"
             : completePath(pollinationsApiProxy || POLLINATIONS_BASE_URL) + "/models";
         if (mode === "proxy") headers.Authorization = `Bearer ${accessKey}`;
       } else if (provider === "ollama") {
         const { ollamaApiProxy } = state;
         url = mode === "proxy"
-            ? baseApiUrl + "/api/ai/ollama/api/tags"
+            ? "/api/ai/ollama/api/tags"
             : completePath(ollamaApiProxy || OLLAMA_BASE_URL, "/api") + "/tags";
         if (mode === "proxy") headers.Authorization = `Bearer ${accessKey}`;
       }

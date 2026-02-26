@@ -15,13 +15,10 @@ export const preferredRegion = [
 
 const API_PROXY_BASE_URL = process.env.SEARXNG_API_BASE_URL || SEARXNG_BASE_URL || "http://localhost:8080";
 
-async function handler(req: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
   try {
     const { slug: path } = await params;
-    let body;
-    if (req.method.toUpperCase() !== "GET" && req.method.toUpperCase() !== "HEAD") {
-      body = await req.json().catch(() => undefined);
-    }
+    const body = await req.clone().json().catch(() => undefined);
     const searchParams = req.nextUrl.searchParams;
     const paramsStr = searchParams.toString();
 
@@ -29,10 +26,11 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
     if (paramsStr) url += `?${paramsStr}`;
 
     const payload: RequestInit = {
-      method: req.method,
+      method: "POST",
       headers: {
-        "Content-Type": req.headers.get("Content-Type") || "application/json",
+        "Content-Type": "application/json",
       },
+      cache: 'no-store',
     };
     if (body) payload.body = JSON.stringify(body);
 
@@ -58,5 +56,3 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
     );
   }
 }
-
-export { handler as GET, handler as POST, handler as PUT, handler as DELETE };

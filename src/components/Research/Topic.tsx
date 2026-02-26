@@ -12,6 +12,7 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import ResourceList from "@/components/Knowledge/ResourceList";
 import Crawler from "@/components/Knowledge/Crawler";
 import { Button } from "@/components/Internal/Button";
@@ -112,6 +113,17 @@ function Topic() {
         }
         setQuestion(values.topic);
         await askQuestions();
+      } catch (err) {
+        console.error("Submit error:", err);
+        const { mode } = useSettingStore.getState();
+        let message = t("research.common.thinkingError");
+        if (err instanceof Error) {
+           message += `: ${err.message}`;
+        }
+        if (mode === "proxy" && (err instanceof TypeError || String(err).includes("Failed to fetch"))) {
+           message = "Failed to connect to server. Please check your network or refresh the page.";
+        }
+        toast.error(message);
       } finally {
         setIsThinking(false);
         accurateTimerStop();

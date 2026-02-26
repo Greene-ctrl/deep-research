@@ -19,7 +19,15 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  runtimeCaching: [
+    {
+      matcher: ({ url }) => url.pathname.startsWith("/api/"),
+      handler: async ({ request }) => {
+        return fetch(request);
+      },
+    },
+    ...defaultCache,
+  ],
 });
 
 serwist.addEventListeners();

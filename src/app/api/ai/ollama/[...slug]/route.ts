@@ -2,50 +2,56 @@ import { NextResponse, type NextRequest } from "next/server";
 import { OLLAMA_BASE_URL } from "@/constants/urls";
 
 export const runtime = "edge";
-export const preferredRegion = [
-  "cle1",
-  "iad1",
-  "pdx1",
-  "sfo1",
-  "sin1",
-  "syd1",
-  "hnd1",
-  "kix1",
-];
+export const dynamic = "force-dynamic";
 
-const API_PROXY_BASE_URL = process.env.OLLAMA_API_BASE_URL || OLLAMA_BASE_URL;
+const API_PROXY_BASE_URL = process.env.OLLAMA_API_BASE_URL || OLLAMA_BASE_URL || "http://localhost:11434";
 
 async function handler(req: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
-  const { slug: path } = await params;
-  let body;
-  if (req.method.toUpperCase() !== "GET") {
-    body = await req.json();
-  }
-  const searchParams = req.nextUrl.searchParams;
-
-
-  const paramsStr = searchParams.toString();
-
   try {
+    const { slug: path } = await params;
+    let body;
+    if (req.method.toUpperCase() !== "GET" && req.method.toUpperCase() !== "HEAD") {
+      body = await req.clone().json().catch(() => undefined);
+    }
+    const searchParams = req.nextUrl.searchParams;
+    const paramsStr = searchParams.toString();
+
     let url = `${API_PROXY_BASE_URL}/${decodeURIComponent(path.join("/"))}`;
     if (paramsStr) url += `?${paramsStr}`;
+
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.delete("authorization");
+    requestHeaders.delete("x-api-key");
+    requestHeaders.delete("x-goog-api-key");
+    requestHeaders.delete("api-key");
+
     const payload: RequestInit = {
       method: req.method,
-      headers: {
-        "Content-Type": req.headers.get("Content-Type") || "application/json",
-      },
+      headers: requestHeaders,
+      cache: 'no-store',
     };
     if (body) payload.body = JSON.stringify(body);
+
     const response = await fetch(url, payload);
-    return new NextResponse(response.body, response);
+
+    const responseHeaders = new Headers();
+    response.headers.forEach((value, key) => {
+      if (!["content-encoding", "transfer-encoding", "content-length", "connection", "keep-alive"].includes(key.toLowerCase())) {
+        responseHeaders.set(key, value);
+      }
+    });
+
+    return new NextResponse(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: responseHeaders,
+    });
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(error);
-      return NextResponse.json(
-        { code: 500, message: error.message },
-        { status: 500 }
-      );
-    }
+    console.error("Proxy error (ollama):", error);
+    return NextResponse.json(
+      { code: 500, message: error instanceof Error ? error.message : "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
