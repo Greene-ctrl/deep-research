@@ -75,16 +75,21 @@ export async function middleware(request: NextRequest) {
   };
   const hasDisabledAIModel = async () => {
     if (request.method.toUpperCase() === "GET") return false;
-    const { model = "" } = await request.json();
-    const { availableModelList, disabledModelList } = getCustomModelList(
-      MODEL_LIST.length > 0 ? MODEL_LIST.split(",") : []
-    );
-    const isAvailableModel = availableModelList.some(
-      (availableModel) => availableModel === model
-    );
-    if (isAvailableModel) return false;
-    if (disabledModelList.includes("all")) return true;
-    return disabledModelList.some((disabledModel) => disabledModel === model);
+    try {
+      const clonedRequest = request.clone();
+      const { model = "" } = await clonedRequest.json();
+      const { availableModelList, disabledModelList } = getCustomModelList(
+        MODEL_LIST.length > 0 ? MODEL_LIST.split(",") : []
+      );
+      const isAvailableModel = availableModelList.some(
+        (availableModel) => availableModel === model
+      );
+      if (isAvailableModel) return false;
+      if (disabledModelList.includes("all")) return true;
+      return disabledModelList.some((disabledModel) => disabledModel === model);
+    } catch {
+      return false;
+    }
   };
 
   if (request.nextUrl.pathname.startsWith("/api/ai/google")) {
