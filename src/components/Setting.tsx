@@ -1,6 +1,6 @@
 "use client";
 import {
-  useLayoutEffect,
+  useEffect,
   useState,
   useCallback,
   useMemo,
@@ -388,14 +388,14 @@ function Setting({ open, onClose }: SettingProps) {
     });
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (open && !preLoading) {
       preLoading = true;
       fetchModelList();
     }
   }, [open, fetchModelList]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (open && mode === "") {
       const { accessPassword, update } = useSettingStore.getState();
       const requestMode = accessPassword ? "proxy" : "local";

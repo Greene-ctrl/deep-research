@@ -15,19 +15,22 @@ export const preferredRegion = [
 const API_PROXY_BASE_URL = process.env.OPENAI_COMPATIBLE_API_BASE_URL || "";
 
 async function handler(req: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
-  const { slug: path } = await params;
-  let body;
-  if (req.method.toUpperCase() !== "GET") {
-    body = await req.json();
-  }
-  const searchParams = req.nextUrl.searchParams;
-
-
-  const paramsStr = searchParams.toString();
-
   try {
+    const { slug: path } = await params;
+    let body;
+    if (req.method.toUpperCase() !== "GET" && req.method.toUpperCase() !== "HEAD") {
+      body = await req.json().catch(() => undefined);
+    }
+    const searchParams = req.nextUrl.searchParams;
+    const paramsStr = searchParams.toString();
+
+    if (!API_PROXY_BASE_URL) {
+      return NextResponse.json({ error: "Base URL not configured" }, { status: 500 });
+    }
+
     let url = `${API_PROXY_BASE_URL}/${decodeURIComponent(path.join("/"))}`;
     if (paramsStr) url += `?${paramsStr}`;
+
     const payload: RequestInit = {
       method: req.method,
       headers: {
@@ -36,16 +39,27 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
       },
     };
     if (body) payload.body = JSON.stringify(body);
+
     const response = await fetch(url, payload);
-    return new NextResponse(response.body, response);
+
+    const responseHeaders = new Headers();
+    response.headers.forEach((value, key) => {
+      if (!["content-encoding", "transfer-encoding", "content-length"].includes(key.toLowerCase())) {
+        responseHeaders.set(key, value);
+      }
+    });
+
+    return new NextResponse(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: responseHeaders,
+    });
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(error);
-      return NextResponse.json(
-        { code: 500, message: error.message },
-        { status: 500 }
-      );
-    }
+    console.error("Proxy error (openaicompatible):", error);
+    return NextResponse.json(
+      { code: 500, message: error instanceof Error ? error.message : "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
