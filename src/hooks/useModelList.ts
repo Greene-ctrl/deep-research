@@ -109,7 +109,7 @@ interface OllamaModel {
 
 function useModelList() {
   const [modelList, setModelList] = useState<string[]>([]);
-  const { mode, provider } = useSettingStore.getState();
+  const provider = useSettingStore((state) => state.provider);
 
   useEffect(() => {
     setModelList([]);
@@ -117,243 +117,239 @@ function useModelList() {
 
   async function refresh(provider: string): Promise<string[]> {
     try {
-    const { accessPassword } = useSettingStore.getState();
-    const accessKey = generateSignature(accessPassword, Date.now());
+      const state = useSettingStore.getState();
+      const { accessPassword, mode } = state;
+      const accessKey = generateSignature(accessPassword, Date.now());
 
-    if (provider === "google") {
-      const { apiKey = "", apiProxy } = useSettingStore.getState();
-      if (mode === "local" && !apiKey) {
-        return [];
-      }
-      const key = multiApiKeyPolling(apiKey);
-      const response = await fetch(
-        mode === "local"
-          ? completePath(apiProxy || GEMINI_BASE_URL, "/v1beta") + "/models"
-          : "/api/ai/google/v1beta/models",
-        {
-          headers: {
-            "x-goog-api-key": mode === "local" ? key : accessKey,
-          },
+      if (provider === "google") {
+        const { apiKey = "", apiProxy } = state;
+        if (mode === "local" && !apiKey) {
+          return [];
         }
-      );
-      const { models = [] } = await response.json();
-      const newModelList = (models as GeminiModel[])
-        .filter(
-          (item) =>
-            item.name.startsWith("models/gemini") &&
-            item.supportedGenerationMethods.includes("generateContent")
-        )
-        .map((item) => item.name.replace("models/", ""));
-      setModelList(newModelList);
-      return newModelList;
-    } else if (provider === "openrouter") {
-      const { openRouterApiKey = "", openRouterApiProxy } =
-        useSettingStore.getState();
-      if (mode === "local" && !openRouterApiKey) {
-        return [];
-      }
-      const apiKey = multiApiKeyPolling(openRouterApiKey);
-      const response = await fetch(
-        mode === "local"
-          ? completePath(openRouterApiProxy || OPENROUTER_BASE_URL, "/api/v1") +
-              "/models"
-          : "/api/ai/openrouter/v1/models",
-        {
-          headers: {
-            authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
-          },
-        }
-      );
-      const { data = [] } = await response.json();
-      const newModelList = (data as OpenRouterModel[]).map((item) => item.id);
-      setModelList(newModelList);
-      return newModelList;
-    } else if (provider === "openai") {
-      const { openAIApiKey = "", openAIApiProxy } = useSettingStore.getState();
-      if (mode === "local" && !openAIApiKey) {
-        return [];
-      }
-      const apiKey = multiApiKeyPolling(openAIApiKey);
-      const response = await fetch(
-        mode === "local"
-          ? completePath(openAIApiProxy || OPENAI_BASE_URL, "/v1") + "/models"
-          : "/api/ai/openai/v1/models",
-        {
-          headers: {
-            authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
-          },
-        }
-      );
-      const { data = [] } = await response.json();
-      const newModelList = (data as OpenAIModel[])
-        .map((item) => item.id)
-        .filter(
-          (id) =>
-            !(
-              id.startsWith("text") ||
-              id.startsWith("tts") ||
-              id.startsWith("whisper") ||
-              id.startsWith("dall-e")
-            )
+        const key = multiApiKeyPolling(apiKey);
+        const response = await fetch(
+          mode === "local"
+            ? completePath(apiProxy || GEMINI_BASE_URL, "/v1beta") + "/models"
+            : "/api/ai/google/v1beta/models",
+          {
+            headers: {
+              "x-goog-api-key": mode === "local" ? key : accessKey,
+            },
+          }
         );
-      setModelList(newModelList);
-      return newModelList;
-    } else if (provider === "anthropic") {
-      const { anthropicApiKey = "", anthropicApiProxy } =
-        useSettingStore.getState();
-      if (mode === "local" && !anthropicApiKey) {
-        return [];
-      }
-      const apiKey = multiApiKeyPolling(anthropicApiKey);
-      const response = await fetch(
-        mode === "local"
-          ? completePath(anthropicApiProxy || ANTHROPIC_BASE_URL, "/v1") +
-              "/models"
-          : "/api/ai/anthropic/v1/models",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": mode === "local" ? apiKey : accessKey,
-            "Anthropic-Version": "2023-06-01",
-            // Avoid cors error
-            "anthropic-dangerous-direct-browser-access": "true",
-          },
+        const { models = [] } = await response.json();
+        const newModelList = (models as GeminiModel[])
+          .filter(
+            (item) =>
+              item.name.startsWith("models/gemini") &&
+              item.supportedGenerationMethods.includes("generateContent")
+          )
+          .map((item) => item.name.replace("models/", ""));
+        setModelList(newModelList);
+        return newModelList;
+      } else if (provider === "openrouter") {
+        const { openRouterApiKey = "", openRouterApiProxy } = state;
+        if (mode === "local" && !openRouterApiKey) {
+          return [];
         }
-      );
-      const { data = [] } = await response.json();
-      const newModelList = (data as AnthropicModel[]).map((item) => item.id);
-      setModelList(newModelList);
-      return newModelList;
-    } else if (provider === "deepseek") {
-      const { deepseekApiKey = "", deepseekApiProxy } =
-        useSettingStore.getState();
-      if (mode === "local" && !deepseekApiKey) {
-        return [];
-      }
-      const apiKey = multiApiKeyPolling(deepseekApiKey);
-      const response = await fetch(
-        mode === "local"
-          ? completePath(deepseekApiProxy || DEEPSEEK_BASE_URL, "/v1") +
-              "/models"
+        const apiKey = multiApiKeyPolling(openRouterApiKey);
+        const response = await fetch(
+          mode === "local"
+            ? completePath(openRouterApiProxy || OPENROUTER_BASE_URL, "/api/v1") +
+                "/models"
+            : "/api/ai/openrouter/v1/models",
+          {
+            headers: {
+              authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
+            },
+          }
+        );
+        const { data = [] } = await response.json();
+        const newModelList = (data as OpenRouterModel[]).map((item) => item.id);
+        setModelList(newModelList);
+        return newModelList;
+      } else if (provider === "openai") {
+        const { openAIApiKey = "", openAIApiProxy } = state;
+        if (mode === "local" && !openAIApiKey) {
+          return [];
+        }
+        const apiKey = multiApiKeyPolling(openAIApiKey);
+        const response = await fetch(
+          mode === "local"
+            ? completePath(openAIApiProxy || OPENAI_BASE_URL, "/v1") + "/models"
+            : "/api/ai/openai/v1/models",
+          {
+            headers: {
+              authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
+            },
+          }
+        );
+        const { data = [] } = await response.json();
+        const newModelList = (data as OpenAIModel[])
+          .map((item) => item.id)
+          .filter(
+            (id) =>
+              !(
+                id.startsWith("text") ||
+                id.startsWith("tts") ||
+                id.startsWith("whisper") ||
+                id.startsWith("dall-e")
+              )
+          );
+        setModelList(newModelList);
+        return newModelList;
+      } else if (provider === "anthropic") {
+        const { anthropicApiKey = "", anthropicApiProxy } = state;
+        if (mode === "local" && !anthropicApiKey) {
+          return [];
+        }
+        const apiKey = multiApiKeyPolling(anthropicApiKey);
+        const response = await fetch(
+          mode === "local"
+            ? completePath(anthropicApiProxy || ANTHROPIC_BASE_URL, "/v1") +
+                "/models"
+            : "/api/ai/anthropic/v1/models",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": mode === "local" ? apiKey : accessKey,
+              "Anthropic-Version": "2023-06-01",
+              // Avoid cors error
+              "anthropic-dangerous-direct-browser-access": "true",
+            },
+          }
+        );
+        const { data = [] } = await response.json();
+        const newModelList = (data as AnthropicModel[]).map((item) => item.id);
+        setModelList(newModelList);
+        return newModelList;
+      } else if (provider === "deepseek") {
+        const { deepseekApiKey = "", deepseekApiProxy } = state;
+        if (mode === "local" && !deepseekApiKey) {
+          return [];
+        }
+        const apiKey = multiApiKeyPolling(deepseekApiKey);
+        const response = await fetch(
+          mode === "local"
+            ? completePath(deepseekApiProxy || DEEPSEEK_BASE_URL, "/v1") +
+                "/models"
           : "/api/ai/deepseek/v1/models",
-        {
-          headers: {
-            authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
-          },
+          {
+            headers: {
+              authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
+            },
+          }
+        );
+        const { data = [] } = await response.json();
+        const newModelList = (data as OpenAIModel[]).map((item) => item.id);
+        setModelList(newModelList);
+        return newModelList;
+      } else if (provider === "xai") {
+        const { xAIApiKey = "", xAIApiProxy } = state;
+        if (mode === "local" && !xAIApiKey) {
+          return [];
         }
-      );
-      const { data = [] } = await response.json();
-      const newModelList = (data as OpenAIModel[]).map((item) => item.id);
-      setModelList(newModelList);
-      return newModelList;
-    } else if (provider === "xai") {
-      const { xAIApiKey = "", xAIApiProxy } = useSettingStore.getState();
-      if (mode === "local" && !xAIApiKey) {
-        return [];
-      }
-      const apiKey = multiApiKeyPolling(xAIApiKey);
-      const response = await fetch(
-        mode === "local"
-          ? completePath(xAIApiProxy || XAI_BASE_URL, "/v1") + "/models"
-          : "/api/ai/xai/v1/models",
-        {
-          headers: {
-            authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
-          },
+        const apiKey = multiApiKeyPolling(xAIApiKey);
+        const response = await fetch(
+          mode === "local"
+            ? completePath(xAIApiProxy || XAI_BASE_URL, "/v1") + "/models"
+            : "/api/ai/xai/v1/models",
+          {
+            headers: {
+              authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
+            },
+          }
+        );
+        const { data = [] } = await response.json();
+        const newModelList = (data as OpenAIModel[])
+          .map((item) => item.id)
+          .filter((id) => !id.includes("image"));
+        setModelList(newModelList);
+        return newModelList;
+      } else if (provider === "mistral") {
+        const { mistralApiKey = "", mistralApiProxy } = state;
+        if (mode === "local" && !mistralApiKey) {
+          return [];
         }
-      );
-      const { data = [] } = await response.json();
-      const newModelList = (data as OpenAIModel[])
-        .map((item) => item.id)
-        .filter((id) => !id.includes("image"));
-      setModelList(newModelList);
-      return newModelList;
-    } else if (provider === "mistral") {
-      const { mistralApiKey = "", mistralApiProxy } =
-        useSettingStore.getState();
-      if (mode === "local" && !mistralApiKey) {
-        return [];
-      }
-      const apiKey = multiApiKeyPolling(mistralApiKey);
-      const response = await fetch(
-        mode === "local"
-          ? completePath(mistralApiProxy || MISTRAL_BASE_URL, "/v1") + "/models"
-          : "/api/ai/mistral/v1/models",
-        {
-          headers: {
-            authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
-          },
+        const apiKey = multiApiKeyPolling(mistralApiKey);
+        const response = await fetch(
+          mode === "local"
+            ? completePath(mistralApiProxy || MISTRAL_BASE_URL, "/v1") + "/models"
+            : "/api/ai/mistral/v1/models",
+          {
+            headers: {
+              authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
+            },
+          }
+        );
+        const { data = [] } = await response.json();
+        const newModelList = (data as MistralModel[])
+          .filter((item) => item.capabilities.completion_chat)
+          .map((item) => item.id);
+        setModelList(newModelList);
+        return newModelList;
+      } else if (provider === "openaicompatible") {
+        const { openAICompatibleApiKey = "", openAICompatibleApiProxy } = state;
+        if (mode === "local" && !openAICompatibleApiKey) {
+          return [];
         }
-      );
-      const { data = [] } = await response.json();
-      const newModelList = (data as MistralModel[])
-        .filter((item) => item.capabilities.completion_chat)
-        .map((item) => item.id);
-      setModelList(newModelList);
-      return newModelList;
-    } else if (provider === "openaicompatible") {
-      const { openAICompatibleApiKey = "", openAICompatibleApiProxy } =
-        useSettingStore.getState();
-      if (mode === "local" && !openAICompatibleApiKey) {
-        return [];
-      }
-      const url = mode === "local"
-          ? (openAICompatibleApiProxy ? completePath(openAICompatibleApiProxy, "/v1") + "/models" : "")
-          : "/api/ai/openaicompatible/v1/models";
+        const url = mode === "local"
+            ? (openAICompatibleApiProxy ? completePath(openAICompatibleApiProxy, "/v1") + "/models" : "")
+            : "/api/ai/openaicompatible/v1/models";
 
-      if (!url) return [];
+        if (!url) return [];
 
-      const apiKey = multiApiKeyPolling(openAICompatibleApiKey);
-      const response = await fetch(
-        url,
-        {
-          headers: {
-            authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
-          },
-        }
-      );
-      const { data = [] } = await response.json();
-      const newModelList = (data as OpenAIModel[]).map((item) => item.id);
-      setModelList(newModelList);
-      return newModelList;
-    } else if (provider === "pollinations") {
-      const { pollinationsApiProxy } = useSettingStore.getState();
-      const headers = new Headers();
-      if (mode === "proxy") headers.set("Authorization", `Bearer ${accessKey}`);
-      const response = await fetch(
-        mode === "proxy"
-          ? "/api/ai/pollinations/models"
-          : completePath(pollinationsApiProxy || POLLINATIONS_BASE_URL) +
-              "/models",
-        {
-          headers,
-        }
-      );
-      const { data = [] } = await response.json();
-      const newModelList = (data as OpenAIModel[])
-        .map((item) => item.id)
-        .filter((name) => !name.includes("audio"));
-      setModelList(newModelList);
-      return newModelList;
-    } else if (provider === "ollama") {
-      const { ollamaApiProxy } = useSettingStore.getState();
-      const headers = new Headers();
-      if (mode === "proxy") headers.set("Authorization", `Bearer ${accessKey}`);
-      const response = await fetch(
-        mode === "proxy"
-          ? "/api/ai/ollama/api/tags"
-          : completePath(ollamaApiProxy || OLLAMA_BASE_URL, "/api") + "/tags",
-        {
-          headers,
-        }
-      );
-      const { models = [] } = await response.json();
-      const newModelList = (models as OllamaModel[]).map((item) => item.name);
-      setModelList(newModelList);
-      return newModelList;
-    } else {
-      return [];
-    }
+        const apiKey = multiApiKeyPolling(openAICompatibleApiKey);
+        const response = await fetch(
+          url,
+          {
+            headers: {
+              authorization: `Bearer ${mode === "local" ? apiKey : accessKey}`,
+            },
+          }
+        );
+        const { data = [] } = await response.json();
+        const newModelList = (data as OpenAIModel[]).map((item) => item.id);
+        setModelList(newModelList);
+        return newModelList;
+      } else if (provider === "pollinations") {
+        const { pollinationsApiProxy } = state;
+        const headers = new Headers();
+        if (mode === "proxy") headers.set("Authorization", `Bearer ${accessKey}`);
+        const response = await fetch(
+          mode === "proxy"
+            ? "/api/ai/pollinations/models"
+            : completePath(pollinationsApiProxy || POLLINATIONS_BASE_URL) +
+                "/models",
+          {
+            headers,
+          }
+        );
+        const { data = [] } = await response.json();
+        const newModelList = (data as OpenAIModel[])
+          .map((item) => item.id)
+          .filter((name) => !name.includes("audio"));
+        setModelList(newModelList);
+        return newModelList;
+      } else if (provider === "ollama") {
+        const { ollamaApiProxy } = state;
+        const headers = new Headers();
+        if (mode === "proxy") headers.set("Authorization", `Bearer ${accessKey}`);
+        const response = await fetch(
+          mode === "proxy"
+            ? "/api/ai/ollama/api/tags"
+            : completePath(ollamaApiProxy || OLLAMA_BASE_URL, "/api") + "/tags",
+          {
+            headers,
+          }
+        );
+        const { models = [] } = await response.json();
+        const newModelList = (models as OllamaModel[]).map((item) => item.name);
+        setModelList(newModelList);
+        return newModelList;
+      } else {
+        return [];
+      }
     } catch (e) {
       console.error("Failed to refresh model list:", e);
       return [];
