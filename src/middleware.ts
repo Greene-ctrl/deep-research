@@ -54,6 +54,10 @@ export async function middleware(request: NextRequest) {
   try {
     const { pathname } = request.nextUrl;
 
+    if (NODE_ENV === "production") {
+      console.log(`[Middleware] ${request.method} ${pathname}`);
+    }
+
     // Skip middleware for non-AI/Search/SSE API routes if any
     if (!pathname.startsWith("/api/ai") && !pathname.startsWith("/api/search") && !pathname.startsWith("/api/sse") && !pathname.startsWith("/api/mcp") && !pathname.startsWith("/api/crawler")) {
       return NextResponse.next();

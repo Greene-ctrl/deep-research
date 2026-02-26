@@ -17,8 +17,10 @@ COPY . .
 RUN pnpm install
 RUN bash setenv.sh
 
+RUN pnpm build
+
 RUN chmod -R 777 /app
 
 EXPOSE 3000
 
-CMD ["pnpm", "dev"]
+CMD ["pnpm", "start"]
