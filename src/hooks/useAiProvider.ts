@@ -204,6 +204,7 @@ function useModelProvider() {
       options.apiKey = generateSignature(password, Date.now());
     }
 
+    console.log(`[AI Provider] Created provider configuration for mode: ${mode}, provider: ${provider}, model: ${model}, baseURL: ${options.baseURL}`);
     return await createAIProvider(options);
   }
 

@@ -25,18 +25,38 @@ export const useDebugStore = create<DebugStore>()(
     (set, get) => ({
       logs: [],
       addLog: (level, message, ...data) => {
-        const serialize = (obj: any): any => {
-          if (obj instanceof Error) {
+        const serialize = (obj: any, depth = 0): any => {
+          if (depth > 3) return "[Max Depth Reached]";
+          if (obj === null || obj === undefined) return obj;
+
+          if (obj instanceof Error || (obj && typeof obj.message === 'string' && typeof obj.name === 'string')) {
             return {
               name: obj.name,
               message: obj.message,
               stack: obj.stack,
+              cause: obj.cause ? serialize(obj.cause, depth + 1) : undefined,
+              // Some APIs return error data in custom properties
+              ...(Object.getOwnPropertyNames(obj).reduce((acc, key) => {
+                if (!['name', 'message', 'stack', 'cause'].includes(key)) {
+                  acc[key] = serialize((obj as any)[key], depth + 1);
+                }
+                return acc;
+              }, {} as any))
             };
           }
-          if (typeof obj === "object" && obj !== null) {
+
+          if (typeof obj === "object") {
             try {
-              // Try to stringify and parse to avoid circular references and non-serializable objects
-              return JSON.parse(JSON.stringify(obj));
+              if (Array.isArray(obj)) {
+                return obj.map(item => serialize(item, depth + 1));
+              }
+              const result: any = {};
+              for (const key in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                   result[key] = serialize(obj[key], depth + 1);
+                }
+              }
+              return result;
             } catch {
               return "[Unserializable Object]";
             }

@@ -207,24 +207,38 @@ function useDeepResearch() {
     const { question } = useTaskStore.getState();
     const { thinkingModel } = getModel();
     setStatus(t("research.common.thinking"));
+    console.log(`[askQuestions] Starting with question: "${question.substring(0, 50)}...", model: ${thinkingModel}`);
     const thinkTagStreamProcessor = new ThinkTagStreamProcessor();
     const promptOverrides = getPromptOverrides();
-    const searchSettings = await generateSearchSettings(thinkingModel);
-    const result = streamText({
+
+    let searchSettings;
+    try {
+      searchSettings = await generateSearchSettings(thinkingModel);
+      console.log(`[askQuestions] Generated search settings successfully`);
+    } catch (err) {
+      console.error(`[askQuestions] Failed to generate search settings:`, err);
+      throw err;
+    }
+
+    try {
+      console.log(`[askQuestions] Initiating streamText call...`);
+      const result = streamText({
       ...searchSettings,
       system: getSystemPrompt(promptOverrides),
       prompt: [
         generateQuestionsPrompt(question, promptOverrides),
         getResponseLanguagePrompt(),
       ].join("\n\n"),
-      experimental_transform: smoothTextStream(smoothTextStreamType),
-      onError: handleError,
-    });
-    let content = "";
-    let reasoning = "";
-    taskStore.setQuestion(question);
-    for await (const part of result.fullStream) {
-      if (part.type === "text-delta") {
+        experimental_transform: smoothTextStream(smoothTextStreamType),
+        onError: handleError,
+      });
+      let content = "";
+      let reasoning = "";
+      taskStore.setQuestion(question);
+
+      console.log(`[askQuestions] Awaiting stream parts...`);
+      for await (const part of result.fullStream) {
+        if (part.type === "text-delta") {
         thinkTagStreamProcessor.processChunk(
           part.textDelta,
           (data) => {
@@ -236,10 +250,15 @@ function useDeepResearch() {
           }
         );
       } else if (part.type === "reasoning") {
-        reasoning += part.textDelta;
+          reasoning += part.textDelta;
+        }
       }
+      console.log(`[askQuestions] Stream completed.`);
+      if (reasoning) console.log(`[askQuestions] Reasoning length: ${reasoning.length}`);
+    } catch (err) {
+      console.error(`[askQuestions] Error during stream processing:`, err);
+      throw err;
     }
-    if (reasoning) console.log(reasoning);
   }
 
   async function writeReportPlan() {

@@ -105,6 +105,7 @@ function Topic() {
     if (handleCheck()) {
       const { id, setQuestion } = useTaskStore.getState();
       try {
+        console.log(`[Topic handleSubmit] Start Thinking requested. Topic: "${values.topic.substring(0, 50)}..."`);
         setIsThinking(true);
         accurateTimerStart();
         if (id !== "") {
@@ -112,9 +113,11 @@ function Topic() {
           form.setValue("topic", values.topic);
         }
         setQuestion(values.topic);
+        console.log(`[Topic handleSubmit] Calling askQuestions()`);
         await askQuestions();
+        console.log(`[Topic handleSubmit] askQuestions() completed`);
       } catch (err) {
-        console.error("Submit error:", err);
+        console.error("[Topic handleSubmit] Caught error:", err);
         const { mode } = useSettingStore.getState();
         let message = t("research.common.thinkingError");
         if (err instanceof Error) {
