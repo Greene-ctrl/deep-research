@@ -1,0 +1,1091 @@
+event: infor
+data: {"name":"deep-research","version":"0.1.0"}
+
+event: progress
+data: {"step":"report-plan","status":"start"}
+
+event: message
+data: {"type":"text","text":"<report-plan>\n"}
+
+event: reasoning
+data: {"type":"text","text":"<think>The"}
+
+event: reasoning
+data: {"type":"text","text":" user"}
+
+event: reasoning
+data: {"type":"text","text":" is"}
+
+event: reasoning
+data: {"type":"text","text":" asking"}
+
+event: reasoning
+data: {"type":"text","text":" for"}
+
+event: reasoning
+data: {"type":"text","text":" the"}
+
+event: reasoning
+data: {"type":"text","text":" latest"}
+
+event: reasoning
+data: {"type":"text","text":" AI"}
+
+event: reasoning
+data: {"type":"text","text":" news"}
+
+event: reasoning
+data: {"type":"text","text":"."}
+
+event: reasoning
+data: {"type":"text","text":" They"}
+
+event: reasoning
+data: {"type":"text","text":" want"}
+
+event: reasoning
+data: {"type":"text","text":" me"}
+
+event: reasoning
+data: {"type":"text","text":" to"}
+
+event: reasoning
+data: {"type":"text","text":" generate"}
+
+event: reasoning
+data: {"type":"text","text":" a"}
+
+event: reasoning
+data: {"type":"text","text":" list"}
+
+event: reasoning
+data: {"type":"text","text":" of"}
+
+event: reasoning
+data: {"type":"text","text":" sections"}
+
+event: reasoning
+data: {"type":"text","text":" for"}
+
+event: reasoning
+data: {"type":"text","text":" a"}
+
+event: reasoning
+data: {"type":"text","text":" report"}
+
+event: reasoning
+data: {"type":"text","text":" based"}
+
+event: reasoning
+data: {"type":"text","text":" on"}
+
+event: reasoning
+data: {"type":"text","text":" this"}
+
+event: reasoning
+data: {"type":"text","text":" topic"}
+
+event: reasoning
+data: {"type":"text","text":"."}
+
+event: reasoning
+data: {"type":"text","text":" Let"}
+
+event: reasoning
+data: {"type":"text","text":" me"}
+
+event: reasoning
+data: {"type":"text","text":" think"}
+
+event: reasoning
+data: {"type":"text","text":" about"}
+
+event: reasoning
+data: {"type":"text","text":" what"}
+
+event: reasoning
+data: {"type":"text","text":" sections"}
+
+event: reasoning
+data: {"type":"text","text":" would"}
+
+event: reasoning
+data: {"type":"text","text":" be"}
+
+event: reasoning
+data: {"type":"text","text":" relevant"}
+
+event: reasoning
+data: {"type":"text","text":" and"}
+
+event: reasoning
+data: {"type":"text","text":" non"}
+
+event: reasoning
+data: {"type":"text","text":"-over"}
+
+event: reasoning
+data: {"type":"text","text":"lapping"}
+
+event: reasoning
+data: {"type":"text","text":".\n\n"}
+
+event: reasoning
+data: {"type":"text","text":"Key"}
+
+event: reasoning
+data: {"type":"text","text":" areas"}
+
+event: reasoning
+data: {"type":"text","text":" of"}
+
+event: reasoning
+data: {"type":"text","text":" AI"}
+
+event: reasoning
+data: {"type":"text","text":" news"}
+
+event: reasoning
+data: {"type":"text","text":" that"}
+
+event: reasoning
+data: {"type":"text","text":" are"}
+
+event: reasoning
+data: {"type":"text","text":" distinct"}
+
+event: reasoning
+data: {"type":"text","text":" and"}
+
+event: reasoning
+data: {"type":"text","text":" relevant"}
+
+event: reasoning
+data: {"type":"text","text":":\n"}
+
+event: reasoning
+data: {"type":"text","text":"1"}
+
+event: reasoning
+data: {"type":"text","text":"."}
+
+event: reasoning
+data: {"type":"text","text":" Breakthrough"}
+
+event: reasoning
+data: {"type":"text","text":"s"}
+
+event: reasoning
+data: {"type":"text","text":"/"}
+
+event: reasoning
+data: {"type":"text","text":"Research"}
+
+event: reasoning
+data: {"type":"text","text":" -"}
+
+event: reasoning
+data: {"type":"text","text":" new"}
+
+event: reasoning
+data: {"type":"text","text":" models"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" capabilities"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" research"}
+
+event: reasoning
+data: {"type":"text","text":" papers"}
+
+event: reasoning
+data: {"type":"text","text":"\n"}
+
+event: reasoning
+data: {"type":"text","text":"2"}
+
+event: reasoning
+data: {"type":"text","text":"."}
+
+event: reasoning
+data: {"type":"text","text":" Industry"}
+
+event: reasoning
+data: {"type":"text","text":"/B"}
+
+event: reasoning
+data: {"type":"text","text":"usiness"}
+
+event: reasoning
+data: {"type":"text","text":" -"}
+
+event: reasoning
+data: {"type":"text","text":" funding"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" acquisitions"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" partnerships"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" earnings"}
+
+event: reasoning
+data: {"type":"text","text":"\n"}
+
+event: reasoning
+data: {"type":"text","text":"3"}
+
+event: reasoning
+data: {"type":"text","text":"."}
+
+event: reasoning
+data: {"type":"text","text":" Regulation"}
+
+event: reasoning
+data: {"type":"text","text":"/"}
+
+event: reasoning
+data: {"type":"text","text":"Policy"}
+
+event: reasoning
+data: {"type":"text","text":" -"}
+
+event: reasoning
+data: {"type":"text","text":" government"}
+
+event: reasoning
+data: {"type":"text","text":" regulations"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" policy"}
+
+event: reasoning
+data: {"type":"text","text":" decisions"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" international"}
+
+event: reasoning
+data: {"type":"text","text":" agreements"}
+
+event: reasoning
+data: {"type":"text","text":"\n"}
+
+event: reasoning
+data: {"type":"text","text":"4"}
+
+event: reasoning
+data: {"type":"text","text":"."}
+
+event: reasoning
+data: {"type":"text","text":" Applications"}
+
+event: reasoning
+data: {"type":"text","text":"/"}
+
+event: reasoning
+data: {"type":"text","text":"Use"}
+
+event: reasoning
+data: {"type":"text","text":" Cases"}
+
+event: reasoning
+data: {"type":"text","text":" -"}
+
+event: reasoning
+data: {"type":"text","text":" real"}
+
+event: reasoning
+data: {"type":"text","text":"-world"}
+
+event: reasoning
+data: {"type":"text","text":" implementations"}
+
+event: reasoning
+data: {"type":"text","text":" across"}
+
+event: reasoning
+data: {"type":"text","text":" industries"}
+
+event: reasoning
+data: {"type":"text","text":"\n"}
+
+event: reasoning
+data: {"type":"text","text":"5"}
+
+event: reasoning
+data: {"type":"text","text":"."}
+
+event: reasoning
+data: {"type":"text","text":" Ethics"}
+
+event: reasoning
+data: {"type":"text","text":"/"}
+
+event: reasoning
+data: {"type":"text","text":"Concern"}
+
+event: reasoning
+data: {"type":"text","text":"s"}
+
+event: reasoning
+data: {"type":"text","text":" -"}
+
+event: reasoning
+data: {"type":"text","text":" bias"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" safety"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" job"}
+
+event: reasoning
+data: {"type":"text","text":" displacement"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" existential"}
+
+event: reasoning
+data: {"type":"text","text":" risks"}
+
+event: reasoning
+data: {"type":"text","text":"\n\n"}
+
+event: reasoning
+data: {"type":"text","text":"These"}
+
+event: reasoning
+data: {"type":"text","text":" are"}
+
+event: reasoning
+data: {"type":"text","text":" all"}
+
+event: reasoning
+data: {"type":"text","text":" distinct"}
+
+event: reasoning
+data: {"type":"text","text":" and"}
+
+event: reasoning
+data: {"type":"text","text":" directly"}
+
+event: reasoning
+data: {"type":"text","text":" relevant"}
+
+event: reasoning
+data: {"type":"text","text":" to"}
+
+event: reasoning
+data: {"type":"text","text":" \""}
+
+event: reasoning
+data: {"type":"text","text":"latest"}
+
+event: reasoning
+data: {"type":"text","text":" AI"}
+
+event: reasoning
+data: {"type":"text","text":" news"}
+
+event: reasoning
+data: {"type":"text","text":"\""}
+
+event: reasoning
+data: {"type":"text","text":" without"}
+
+event: reasoning
+data: {"type":"text","text":" overlapping"}
+
+event: reasoning
+data: {"type":"text","text":" too"}
+
+event: reasoning
+data: {"type":"text","text":" much"}
+
+event: reasoning
+data: {"type":"text","text":"."}
+
+event: reasoning
+data: {"type":"text","text":" Let"}
+
+event: reasoning
+data: {"type":"text","text":" me"}
+
+event: reasoning
+data: {"type":"text","text":" make"}
+
+event: reasoning
+data: {"type":"text","text":" sure"}
+
+event: reasoning
+data: {"type":"text","text":" each"}
+
+event: reasoning
+data: {"type":"text","text":" section"}
+
+event: reasoning
+data: {"type":"text","text":" has"}
+
+event: reasoning
+data: {"type":"text","text":" a"}
+
+event: reasoning
+data: {"type":"text","text":" clear"}
+
+event: reasoning
+data: {"type":"text","text":","}
+
+event: reasoning
+data: {"type":"text","text":" distinct"}
+
+event: reasoning
+data: {"type":"text","text":" purpose"}
+
+event: reasoning
+data: {"type":"text","text":".\n\n"}
+
+event: reasoning
+data: {"type":"text","text":"I'll"}
+
+event: reasoning
+data: {"type":"text","text":" structure"}
+
+event: reasoning
+data: {"type":"text","text":" this"}
+
+event: reasoning
+data: {"type":"text","text":" as"}
+
+event: reasoning
+data: {"type":"text","text":" a"}
+
+event: reasoning
+data: {"type":"text","text":" report"}
+
+event: reasoning
+data: {"type":"text","text":" outline"}
+
+event: reasoning
+data: {"type":"text","text":" with"}
+
+event: reasoning
+data: {"type":"text","text":" clear"}
+
+event: reasoning
+data: {"type":"text","text":" section"}
+
+event: reasoning
+data: {"type":"text","text":" descriptions"}
+
+event: reasoning
+data: {"type":"text","text":".\n"}
+
+event: message
+data: {"type":"text","text":"\n\n"}
+
+event: message
+data: {"type":"text","text":"#"}
+
+event: message
+data: {"type":"text","text":" Report"}
+
+event: message
+data: {"type":"text","text":" Structure"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" Latest"}
+
+event: message
+data: {"type":"text","text":" AI"}
+
+event: message
+data: {"type":"text","text":" News"}
+
+event: message
+data: {"type":"text","text":"\n\n"}
+
+event: message
+data: {"type":"text","text":"##"}
+
+event: message
+data: {"type":"text","text":" Section"}
+
+event: message
+data: {"type":"text","text":" "}
+
+event: message
+data: {"type":"text","text":"1"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" Major"}
+
+event: message
+data: {"type":"text","text":" Model"}
+
+event: message
+data: {"type":"text","text":" Releases"}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" Research"}
+
+event: message
+data: {"type":"text","text":" Breakthrough"}
+
+event: message
+data: {"type":"text","text":"s"}
+
+event: message
+data: {"type":"text","text":"\n"}
+
+event: message
+data: {"type":"text","text":"*"}
+
+event: message
+data: {"type":"text","text":"Summary"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" Covers"}
+
+event: message
+data: {"type":"text","text":" new"}
+
+event: message
+data: {"type":"text","text":" AI"}
+
+event: message
+data: {"type":"text","text":" model"}
+
+event: message
+data: {"type":"text","text":" announcements"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" significant"}
+
+event: message
+data: {"type":"text","text":" research"}
+
+event: message
+data: {"type":"text","text":" papers"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" technological"}
+
+event: message
+data: {"type":"text","text":" capability"}
+
+event: message
+data: {"type":"text","text":" advances"}
+
+event: message
+data: {"type":"text","text":" from"}
+
+event: message
+data: {"type":"text","text":" leading"}
+
+event: message
+data: {"type":"text","text":" labs"}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" companies"}
+
+event: message
+data: {"type":"text","text":".*\n\n"}
+
+event: message
+data: {"type":"text","text":"##"}
+
+event: message
+data: {"type":"text","text":" Section"}
+
+event: message
+data: {"type":"text","text":" "}
+
+event: message
+data: {"type":"text","text":"2"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" Industry"}
+
+event: message
+data: {"type":"text","text":" Investments"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" Ac"}
+
+event: message
+data: {"type":"text","text":"quisitions"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" Corporate"}
+
+event: message
+data: {"type":"text","text":" Strategy"}
+
+event: message
+data: {"type":"text","text":"\n"}
+
+event: message
+data: {"type":"text","text":"*"}
+
+event: message
+data: {"type":"text","text":"Summary"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" Details"}
+
+event: message
+data: {"type":"text","text":" funding"}
+
+event: message
+data: {"type":"text","text":" rounds"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" mergers"}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" acquisitions"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" strategic"}
+
+event: message
+data: {"type":"text","text":" partnerships"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" financial"}
+
+event: message
+data: {"type":"text","text":" performance"}
+
+event: message
+data: {"type":"text","text":" reports"}
+
+event: message
+data: {"type":"text","text":" from"}
+
+event: message
+data: {"type":"text","text":" AI"}
+
+event: message
+data: {"type":"text","text":" companies"}
+
+event: message
+data: {"type":"text","text":".*\n\n"}
+
+event: message
+data: {"type":"text","text":"##"}
+
+event: message
+data: {"type":"text","text":" Section"}
+
+event: message
+data: {"type":"text","text":" "}
+
+event: message
+data: {"type":"text","text":"3"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" Government"}
+
+event: message
+data: {"type":"text","text":" Regulation"}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" Policy"}
+
+event: message
+data: {"type":"text","text":" Developments"}
+
+event: message
+data: {"type":"text","text":"\n"}
+
+event: message
+data: {"type":"text","text":"*"}
+
+event: message
+data: {"type":"text","text":"Summary"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" Exam"}
+
+event: message
+data: {"type":"text","text":"ines"}
+
+event: message
+data: {"type":"text","text":" new"}
+
+event: message
+data: {"type":"text","text":" AI"}
+
+event: message
+data: {"type":"text","text":" regulations"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" legislative"}
+
+event: message
+data: {"type":"text","text":" proposals"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" international"}
+
+event: message
+data: {"type":"text","text":" policy"}
+
+event: message
+data: {"type":"text","text":" agreements"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" compliance"}
+
+event: message
+data: {"type":"text","text":" frameworks"}
+
+event: message
+data: {"type":"text","text":" being"}
+
+event: message
+data: {"type":"text","text":" implemented"}
+
+event: message
+data: {"type":"text","text":" globally"}
+
+event: message
+data: {"type":"text","text":".*\n\n"}
+
+event: message
+data: {"type":"text","text":"##"}
+
+event: message
+data: {"type":"text","text":" Section"}
+
+event: message
+data: {"type":"text","text":" "}
+
+event: message
+data: {"type":"text","text":"4"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" Enterprise"}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" Consumer"}
+
+event: message
+data: {"type":"text","text":" Application"}
+
+event: message
+data: {"type":"text","text":" Deploy"}
+
+event: message
+data: {"type":"text","text":"ments"}
+
+event: message
+data: {"type":"text","text":"\n"}
+
+event: message
+data: {"type":"text","text":"*"}
+
+event: message
+data: {"type":"text","text":"Summary"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" Highlights"}
+
+event: message
+data: {"type":"text","text":" real"}
+
+event: message
+data: {"type":"text","text":"-world"}
+
+event: message
+data: {"type":"text","text":" AI"}
+
+event: message
+data: {"type":"text","text":" implementations"}
+
+event: message
+data: {"type":"text","text":" across"}
+
+event: message
+data: {"type":"text","text":" industries"}
+
+event: message
+data: {"type":"text","text":" including"}
+
+event: message
+data: {"type":"text","text":" healthcare"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" finance"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" education"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" robotics"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" consumer"}
+
+event: message
+data: {"type":"text","text":" products"}
+
+event: message
+data: {"type":"text","text":".*\n\n"}
+
+event: message
+data: {"type":"text","text":"##"}
+
+event: message
+data: {"type":"text","text":" Section"}
+
+event: message
+data: {"type":"text","text":" "}
+
+event: message
+data: {"type":"text","text":"5"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" AI"}
+
+event: message
+data: {"type":"text","text":" Safety"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" Ethics"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" Soci"}
+
+event: message
+data: {"type":"text","text":"etal"}
+
+event: message
+data: {"type":"text","text":" Impact"}
+
+event: message
+data: {"type":"text","text":"\n"}
+
+event: message
+data: {"type":"text","text":"*"}
+
+event: message
+data: {"type":"text","text":"Summary"}
+
+event: message
+data: {"type":"text","text":":"}
+
+event: message
+data: {"type":"text","text":" Addresses"}
+
+event: message
+data: {"type":"text","text":" concerns"}
+
+event: message
+data: {"type":"text","text":" around"}
+
+event: message
+data: {"type":"text","text":" bias"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" alignment"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" job"}
+
+event: message
+data: {"type":"text","text":" displacement"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" misinformation"}
+
+event: message
+data: {"type":"text","text":","}
+
+event: message
+data: {"type":"text","text":" and"}
+
+event: message
+data: {"type":"text","text":" broader"}
+
+event: message
+data: {"type":"text","text":" societal"}
+
+event: message
+data: {"type":"text","text":" implications"}
+
+event: message
+data: {"type":"text","text":" of"}
+
+event: message
+data: {"type":"text","text":" AI"}
+
+event: message
+data: {"type":"text","text":" deployment"}
+
+event: message
+data: {"type":"text","text":".*"}
+
+event: message
+data: {"type":"text","text":"\n</report-plan>\n\n"}
+
+event: progress
+data: {"step":"report-plan","status":"end","data":"\n\n# Report Structure: Latest AI News\n\n## Section 1: Major Model Releases and Research Breakthroughs\n*Summary: Covers new AI model announcements, significant research papers, and technological capability advances from leading labs and companies.*\n\n## Section 2: Industry Investments, Acquisitions, and Corporate Strategy\n*Summary: Details funding rounds, mergers and acquisitions, strategic partnerships, and financial performance reports from AI companies.*\n\n## Section 3: Government Regulation and Policy Developments\n*Summary: Examines new AI regulations, legislative proposals, international policy agreements, and compliance frameworks being implemented globally.*\n\n## Section 4: Enterprise and Consumer Application Deployments\n*Summary: Highlights real-world AI implementations across industries including healthcare, finance, education, robotics, and consumer products.*\n\n## Section 5: AI Safety, Ethics, and Societal Impact\n*Summary: Addresses concerns around bias, alignment, job displacement, misinformation, and broader societal implications of AI deployment.*"}
+
+event: progress
+data: {"step":"serp-query","status":"start"}
