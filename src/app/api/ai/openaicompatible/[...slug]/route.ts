@@ -42,6 +42,9 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
     requestHeaders.delete("x-api-key");
     requestHeaders.delete("x-goog-api-key");
     requestHeaders.delete("api-key");
+    requestHeaders.delete("host");
+    requestHeaders.delete("origin");
+    requestHeaders.delete("referer");
 
     if (apiKey) {
       requestHeaders.set("Authorization", `Bearer ${apiKey}`);
