@@ -1,7 +1,7 @@
 # Test Report: Deep Research Application
 
 ## Overview
-This report summarizes the testing performed on the deployed Deep Research application at `https://harvesthealth-deep-research.hf.space`. The goal was to explore, identify, and verify the exposed API endpoints and the general functionality of the application.
+This report summarizes the testing performed on the deployed Deep Research application at `https://harvesthealth-deep-research.hf.space`. The goal was to explore, identify, and verify the exposed API endpoints and the general functionality of the application, including authentication mechanisms.
 
 ## 1. Network Discovery & API Analysis
 Using Playwright, we navigated to the application and attempted to initiate a research task to observe network traffic.
@@ -22,21 +22,23 @@ We executed automated tests against the discovered endpoints using Python `reque
 | Endpoint | Method | Status Code | Result | Notes |
 | :--- | :--- | :--- | :--- | :--- |
 | `/` | GET | 200 | **PASS** | Homepage loads successfully. |
-| `/api/sse/live` | GET | 403 | **PASS** (Expected) | Access is forbidden, indicating authentication is required for the live event stream. |
+| `/api/sse/live` | GET | 403 | **PASS** (Expected) | Access is forbidden without authentication. |
+| `/api/sse/live` | GET (Auth) | 500 | **FAIL** | Authenticated request (Bearer Token) triggered an Internal Server Error. |
 | `/api/research` | POST | 404 | **FAIL** | Endpoint not found. |
 | `/api/submit` | POST | 404 | **FAIL** | Endpoint not found. |
 | `/api/chat` | POST | 404 | **FAIL** | Endpoint not found. |
 
 ## 3. Findings & Conclusion
 *   **Functionality:** The web application is accessible and the frontend loads correctly.
-*   **Security:** The sensitive `/api/sse/live` endpoint is protected (403 Forbidden), which is a positive security finding, preventing unauthorized access to the research event stream.
-*   **API Exposure:** The API is not publicly documented or easily discoverable via standard introspection. The primary interaction model appears to be through the frontend, likely relying on internal state or authenticated sessions not easily replicated by a simple script without credentials.
+*   **Authentication:** The `/api/sse/live` endpoint is protected. Testing confirmed that **Bearer Token authentication** is the correct method, as providing the key changed the response from `403 Forbidden` to `500 Internal Server Error`.
+    *   This indicates the server recognized the credentials but failed to process the request, likely due to missing session context or parameters that would typically be established during a valid research initiation flow.
+*   **API Exposure:** The API is not publicly documented or easily discoverable via standard introspection. The primary interaction model appears to be through the frontend.
 
 ## 4. Recommendations
-*   **Authentication:** To fully test the research workflow, valid authentication credentials (headers/cookies) are required to access the `/api/sse/live` stream.
+*   **Error Handling:** The `500 Internal Server Error` on the authenticated SSE endpoint should be investigated by the development team. It should ideally return a `400 Bad Request` if parameters are missing, rather than crashing or erroring internally.
 *   **Documentation:** If the API is intended for public or external use, documentation (Swagger/OpenAPI) should be exposed.
 
 ## Test Artifacts
 *   `discover_api.py`: Playwright script for network discovery.
-*   `run_tests.py`: Python script for endpoint testing.
-*   `test_results.log`: Output log of the test execution.
+*   `run_tests_auth_extended.py`: Python script for extended authentication testing.
+*   `auth_results.log`: Output log of the authentication tests.
