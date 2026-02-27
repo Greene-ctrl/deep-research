@@ -1,0 +1,3 @@
+Running API Tests...
+PASS: Homepage load (200 OK)
+PASS: /api/sse/live (403 Forbidden - Auth likely required)
