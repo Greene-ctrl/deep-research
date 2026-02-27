@@ -55,7 +55,7 @@ function smoothTextStream(type: "character" | "word" | "line") {
 }
 
 function handleError(error: unknown) {
-  console.log(error);
+  console.error("DeepResearch execution error:", error);
   const errorMessage = parseError(error);
   toast.error(errorMessage);
 }
