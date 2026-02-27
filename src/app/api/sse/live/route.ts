@@ -23,6 +23,9 @@ export const preferredRegion = [
 ];
 
 export async function GET(req: NextRequest) {
+  const requestId = Math.random().toString(36).substring(7);
+  console.log(`[SSE-LIVE][${requestId}] Start GET request`);
+
   function getValueFromSearchParams(key: string) {
     return req.nextUrl.searchParams.get(key);
   }
@@ -50,10 +53,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 400 });
   }
 
+  console.log(`[SSE-LIVE][${requestId}] Query: ${query}, Provider: ${provider}, TaskModel: ${taskModel}, Search: ${searchProvider}`);
+
   const encoder = new TextEncoder();
   const readableStream = new ReadableStream({
     start: async (controller) => {
-      console.log("Client connected");
+      console.log(`[SSE-LIVE][${requestId}] Stream started`);
       controller.enqueue(
         encoder.encode(
           `event: infor\ndata: ${JSON.stringify({
@@ -64,7 +69,7 @@ export async function GET(req: NextRequest) {
       );
 
       req.signal.addEventListener("abort", () => {
-        console.log("Client disconnected");
+        console.log(`[SSE-LIVE][${requestId}] Stream aborted by client`);
       });
 
       const deepResearch = new DeepResearch({
@@ -86,15 +91,16 @@ export async function GET(req: NextRequest) {
         onMessage: (event, data) => {
           if (event === "progress") {
             console.log(
-              `[${data.step}]: ${data.name ? `"${data.name}" ` : ""}${
+              `[SSE-LIVE][${requestId}][${data.step}]: ${data.name ? `"${data.name}" ` : ""}${
                 data.status
               }`
             );
             if (data.step === "final-report" && data.status === "end") {
+              console.log(`[SSE-LIVE][${requestId}] Research completed successfully`);
               controller.close();
             }
           } else if (event === "error") {
-            console.error(data);
+            console.error(`[SSE-LIVE][${requestId}] Error:`, data);
             controller.close();
           }
           controller.enqueue(
@@ -117,8 +123,10 @@ export async function GET(req: NextRequest) {
           enableFileFormatResource
         );
       } catch (err) {
+        console.error(`[SSE-LIVE][${requestId}] Research error:`, err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
       }
+      console.log(`[SSE-LIVE][${requestId}] Stream closing normally`);
       controller.close();
     },
   });

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { verifySignature } from "@/utils/signature";
 
-const NODE_ENV = process.env.NODE_ENV;
 const accessPassword = process.env.ACCESS_PASSWORD || "";
 const DISABLED_AI_PROVIDER = process.env.NEXT_PUBLIC_DISABLED_AI_PROVIDER || "";
 const DISABLED_SEARCH_PROVIDER = process.env.NEXT_PUBLIC_DISABLED_SEARCH_PROVIDER || "";
@@ -21,23 +20,23 @@ const ERRORS = {
 };
 
 export async function middleware(request: NextRequest) {
-  try {
-    const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl;
+  const requestId = Math.random().toString(36).substring(7);
 
+  try {
     // Skip authorization for non-sensitive API routes
     if (!pathname.startsWith("/api/ai") && !pathname.startsWith("/api/search") && !pathname.startsWith("/api/sse") && !pathname.startsWith("/api/mcp") && !pathname.startsWith("/api/crawler")) {
       return NextResponse.next();
     }
 
-    if (NODE_ENV === "production") {
-      console.log(`[Middleware] ${request.method} ${pathname}`);
-    }
+    console.log(`[${requestId}] [Middleware] Incoming: ${request.method} ${pathname}`);
 
     const isAuthorized = (authStr: string) => {
-      if (!accessPassword) return true; // If no password set, allow
-      if (!authStr) return false;
+      if (!accessPassword) return { ok: true, msg: "No password set" };
+      if (!authStr) return { ok: false, msg: "Missing authorization header" };
       const token = authStr.startsWith("Bearer ") ? authStr.substring(7) : authStr;
-      return verifySignature(token, accessPassword, Date.now());
+      const verified = verifySignature(token, accessPassword, Date.now());
+      return { ok: verified, msg: verified ? "Verified" : "Invalid signature" };
     };
 
     // 1. Check AI Provider restrictions
@@ -46,10 +45,11 @@ export async function middleware(request: NextRequest) {
       const disabledAIProviders = DISABLED_AI_PROVIDER ? DISABLED_AI_PROVIDER.split(",") : [];
       const authHeader = request.headers.get("x-goog-api-key") || request.headers.get("authorization") || request.headers.get("api-key") || "";
 
-      if (!isAuthorized(authHeader) || disabledAIProviders.includes(provider)) {
+      const auth = isAuthorized(authHeader);
+      if (!auth.ok || disabledAIProviders.includes(provider)) {
+        console.warn(`[${requestId}] [Middleware] [AI] BLOCKED: provider=${provider}, auth=${auth.msg}`);
         return NextResponse.json({ error: ERRORS.NO_PERMISSIONS }, { status: 403 });
       }
-      // Note: Model-level restrictions are now handled in individual route handlers to avoid consuming request streams in middleware.
     }
 
     // 2. Check Search Provider restrictions
@@ -57,25 +57,29 @@ export async function middleware(request: NextRequest) {
       const provider = pathname.split("/")[3];
       const disabledSearchProviders = DISABLED_SEARCH_PROVIDER ? DISABLED_SEARCH_PROVIDER.split(",") : [];
       const authHeader = request.headers.get("authorization") || "";
-      if (!isAuthorized(authHeader) || disabledSearchProviders.includes(provider)) {
+      const auth = isAuthorized(authHeader);
+      if (!auth.ok || disabledSearchProviders.includes(provider)) {
+        console.warn(`[${requestId}] [Middleware] [Search] BLOCKED: provider=${provider}, auth=${auth.msg}`);
         return NextResponse.json({ error: ERRORS.NO_PERMISSIONS }, { status: 403 });
       }
     }
 
     // 3. Check SSE/MCP/Crawler restrictions
     if (pathname.startsWith("/api/sse") || pathname.startsWith("/api/mcp") || pathname.startsWith("/api/crawler")) {
-      let auth = request.headers.get("authorization") || "";
-      if (auth.startsWith("Bearer ")) auth = auth.substring(7);
-      else if (request.method === "GET") auth = request.nextUrl.searchParams.get("password") || "";
+      let authHeader = request.headers.get("authorization") || "";
+      if (authHeader.startsWith("Bearer ")) authHeader = authHeader.substring(7);
+      else if (request.method === "GET") authHeader = request.nextUrl.searchParams.get("password") || "";
 
-      if (accessPassword && auth !== accessPassword) {
+      if (accessPassword && authHeader !== accessPassword) {
+        console.warn(`[${requestId}] [Middleware] [Special] BLOCKED: path=${pathname}, auth=Password mismatch`);
         return NextResponse.json({ error: ERRORS.NO_PERMISSIONS }, { status: 403 });
       }
     }
 
+    console.log(`[${requestId}] [Middleware] PASS: ${pathname}`);
     return NextResponse.next();
   } catch (err) {
-    console.error("Middleware crash prevented:", err);
+    console.error(`[${requestId}] [Middleware] CRASH:`, err);
     return NextResponse.next();
   }
 }

@@ -1,36 +1,32 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 export const runtime = "edge";
-export const preferredRegion = [
-  "cle1",
-  "iad1",
-  "pdx1",
-  "sfo1",
-  "sin1",
-  "syd1",
-  "hnd1",
-  "kix1",
-];
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  const requestId = Math.random().toString(36).substring(7);
   try {
     const { url } = await req.json();
-    if (!url) throw new Error("Missing parameters!");
-    const response = await fetch(url, { next: { revalidate: 60 } });
-    const result = await response.text();
+    console.log(`[${requestId}] [Crawler] Target: ${url}`);
 
-    const titleRegex = /<title>(.*?)<\/title>/i;
-    const titleMatch = result.match(titleRegex);
-    const title = titleMatch ? titleMatch[1].trim() : "";
+    // Using a public Jina reader as a fallback if no other crawler is configured
+    const crawlerUrl = `https://r.jina.ai/${url}`;
+    const response = await fetch(crawlerUrl, {
+       headers: {
+         "X-Return-Format": "markdown"
+       },
+       cache: 'no-store'
+    });
 
-    return NextResponse.json({ url, title, content: result });
+    console.log(`[${requestId}] [Crawler] Response: ${response.status}`);
+
+    const text = await response.text();
+    return NextResponse.json({ content: text });
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(error);
-      return NextResponse.json(
-        { code: 500, message: error.message },
-        { status: 500 }
-      );
-    }
+    console.error(`[${requestId}] [Crawler] ERROR:`, error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

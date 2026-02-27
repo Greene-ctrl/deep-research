@@ -9,6 +9,7 @@ const API_PROXY_BASE_URL = process.env.ANTHROPIC_API_BASE_URL || ANTHROPIC_BASE_
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "";
 
 async function handler(req: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
+  const requestId = Math.random().toString(36).substring(7);
   try {
     const { slug: path } = await params;
     let body;
@@ -20,6 +21,8 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
 
     let url = `${API_PROXY_BASE_URL}/${decodeURIComponent(path.join("/"))}`;
     if (paramsStr) url += `?${paramsStr}`;
+
+    console.log(`[${requestId}] [Proxy] [Anthropic] Upstream: ${url}`);
 
     const apiKey = multiApiKeyPolling(ANTHROPIC_API_KEY);
 
@@ -43,6 +46,8 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
 
     const response = await fetch(url, payload);
 
+    console.log(`[${requestId}] [Proxy] [Anthropic] Response: ${response.status}`);
+
     const responseHeaders = new Headers();
     response.headers.forEach((value, key) => {
       if (!["content-encoding", "transfer-encoding", "content-length", "connection", "keep-alive"].includes(key.toLowerCase())) {
@@ -56,7 +61,7 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
       headers: responseHeaders,
     });
   } catch (error) {
-    console.error("Proxy error (anthropic):", error);
+    console.error(`[${requestId}] [Proxy] [Anthropic] ERROR:`, error);
     return NextResponse.json(
       { code: 500, message: error instanceof Error ? error.message : "Internal Server Error" },
       { status: 500 }
