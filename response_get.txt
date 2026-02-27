@@ -1,0 +1,24 @@
+* Host localhost:3000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:3000...
+* Connected to localhost (::1) port 3000
+> GET /api/sse/live HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Authorization: Bearer testpassword
+>
+< HTTP/1.1 400 Bad Request
+< content-type: application/json
+< Date: Fri, 27 Feb 2026 15:21:39 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+<
+{ [98 bytes data]
+100    98    0    98    0     0    872      0 --:--:-- --:--:-- --:--:--   875
+* Connection #0 to host localhost left intact
+{"error":"Missing required parameters: query, provider, thinkingModel, taskModel, searchProvider"}

@@ -1,0 +1,28 @@
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:3000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:3000...
+* Connected to localhost (::1) port 3000
+> POST /api/sse HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Authorization: Bearer testpassword
+> Content-Type: application/json
+> Content-Length: 2
+>
+} [2 bytes data]
+< HTTP/1.1 400 Bad Request
+< content-type: application/json
+< Date: Fri, 27 Feb 2026 15:22:02 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+<
+100     2    0     0  100     2      0      3 --:--:-- --:--:-- --:--:--     3{ [98 bytes data]
+100   100    0    98  100     2    190      3 --:--:-- --:--:-- --:--:--   193
+* Connection #0 to host localhost left intact
+{"error":"Missing required parameters: query, provider, thinkingModel, taskModel, searchProvider"}
