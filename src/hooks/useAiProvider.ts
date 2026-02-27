@@ -21,6 +21,7 @@ import { completePath } from "@/utils/url";
 function useModelProvider() {
   async function createModelProvider(model: string, settings?: any) {
     const { mode, provider, accessPassword } = useSettingStore.getState();
+    const password = accessPassword || process.env.NEXT_PUBLIC_ACCESS_PASSWORD || "";
     const options: AIProviderOptions = {
       baseURL: "",
       provider,
@@ -200,7 +201,7 @@ function useModelProvider() {
     }
 
     if (mode === "proxy") {
-      options.apiKey = generateSignature(accessPassword, Date.now());
+      options.apiKey = generateSignature(password, Date.now());
     }
 
     return await createAIProvider(options);

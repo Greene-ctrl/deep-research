@@ -193,6 +193,30 @@ export const useSettingStore = create(
       update: (values) => set(values),
       reset: () => set(defaultValues),
     }),
-    { name: "setting" },
+    {
+      name: "setting",
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+        // Override with environment variables if present
+        if (process.env.NEXT_PUBLIC_ACCESS_PASSWORD) {
+          state.accessPassword = process.env.NEXT_PUBLIC_ACCESS_PASSWORD;
+          state.mode = "proxy";
+        }
+        if (process.env.NEXT_PUBLIC_OPENAI_COMPATIBLE_API_BASE_URL) {
+          state.openAICompatibleApiProxy = process.env.NEXT_PUBLIC_OPENAI_COMPATIBLE_API_BASE_URL;
+          state.provider = "openaicompatible";
+        }
+        if (process.env.NEXT_PUBLIC_OPENAI_COMPATIBLE_API_KEY) {
+          state.openAICompatibleApiKey = process.env.NEXT_PUBLIC_OPENAI_COMPATIBLE_API_KEY;
+        }
+        if (process.env.NEXT_PUBLIC_SEARXNG_API_BASE_URL) {
+          state.searxngApiProxy = process.env.NEXT_PUBLIC_SEARXNG_API_BASE_URL;
+          state.searchProvider = "searxng";
+        }
+        if (process.env.NEXT_PUBLIC_TAVILY_API_KEY) {
+          state.tavilyApiKey = process.env.NEXT_PUBLIC_TAVILY_API_KEY;
+        }
+      }
+    },
   ),
 );

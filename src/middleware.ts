@@ -33,7 +33,9 @@ export async function middleware(request: NextRequest) {
 
     const isAuthorized = (authStr: string) => {
       if (!accessPassword) return { ok: true, msg: "No password set" };
-      if (!authStr) return { ok: false, msg: "Missing authorization header" };
+      if (!authStr) {
+        return { ok: false, msg: "Missing authorization header" };
+      }
       const token = authStr.startsWith("Bearer ") ? authStr.substring(7) : authStr;
       const verified = verifySignature(token, accessPassword, Date.now());
       return { ok: verified, msg: verified ? "Verified" : "Invalid signature" };
@@ -43,7 +45,13 @@ export async function middleware(request: NextRequest) {
     if (pathname.startsWith("/api/ai")) {
       const provider = pathname.split("/")[3];
       const disabledAIProviders = DISABLED_AI_PROVIDER ? DISABLED_AI_PROVIDER.split(",") : [];
-      const authHeader = request.headers.get("x-goog-api-key") || request.headers.get("authorization") || request.headers.get("api-key") || "";
+      const authHeader = request.headers.get("Authorization") ||
+                         request.headers.get("authorization") ||
+                         request.headers.get("x-goog-api-key") ||
+                         request.headers.get("x-api-key") ||
+                         request.headers.get("api-key") || "";
+
+      console.log(`[${requestId}] [Middleware] [AI] Auth header present: ${!!authHeader}, length: ${authHeader?.length || 0}, start: ${authHeader ? authHeader.substring(0, 10) + "..." : "none"}`);
 
       const auth = isAuthorized(authHeader);
       if (!auth.ok || disabledAIProviders.includes(provider)) {
@@ -56,7 +64,7 @@ export async function middleware(request: NextRequest) {
     if (pathname.startsWith("/api/search")) {
       const provider = pathname.split("/")[3];
       const disabledSearchProviders = DISABLED_SEARCH_PROVIDER ? DISABLED_SEARCH_PROVIDER.split(",") : [];
-      const authHeader = request.headers.get("authorization") || "";
+      const authHeader = request.headers.get("Authorization") || request.headers.get("authorization") || "";
       const auth = isAuthorized(authHeader);
       if (!auth.ok || disabledSearchProviders.includes(provider)) {
         console.warn(`[${requestId}] [Middleware] [Search] BLOCKED: provider=${provider}, auth=${auth.msg}`);
@@ -66,7 +74,7 @@ export async function middleware(request: NextRequest) {
 
     // 3. Check SSE/MCP/Crawler restrictions
     if (pathname.startsWith("/api/sse") || pathname.startsWith("/api/mcp") || pathname.startsWith("/api/crawler")) {
-      let authHeader = request.headers.get("authorization") || "";
+      let authHeader = request.headers.get("Authorization") || request.headers.get("authorization") || "";
       if (authHeader.startsWith("Bearer ")) authHeader = authHeader.substring(7);
       else if (request.method === "GET") authHeader = request.nextUrl.searchParams.get("password") || "";
 
