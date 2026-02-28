@@ -357,6 +357,14 @@ function useDeepResearch() {
     return content;
   }
 
+  const [abortController, setAbortController] = useState<AbortController | null>(null);
+
+  const abortResearch = () => {
+    if (abortController) {
+      abortController.abort();
+    }
+  };
+
   async function runSearchTask(queries: SearchTask[]) {
     const {
       enableSearch,
@@ -370,10 +378,20 @@ function useDeepResearch() {
     const promptOverrides = getPromptOverrides();
     setStatus(t("research.common.research"));
     const plimit = Plimit(parallelSearch);
+    const controller = new AbortController();
+    setAbortController(controller);
+
+    let completedCount = 0;
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const thinkTagStreamProcessor = new ThinkTagStreamProcessor();
     await Promise.all(
       queries.map((item) => {
-        plimit(async () => {
+        return plimit(async () => {
+          if (controller.signal.aborted) {
+            taskStore.updateTask(item.query, { state: "failed", learning: "Aborted by user or timeout" });
+            return "";
+          }
           let content = "";
           let reasoning = "";
           let searchResult;
@@ -400,6 +418,12 @@ function useDeepResearch() {
                 sources,
                 images,
               });
+              completedCount++;
+              if (completedCount / queries.length >= 0.8 && !timeoutId) {
+                timeoutId = setTimeout(() => {
+                  controller.abort();
+                }, 600000);
+              }
               return content;
             } else {
               content += "\n\n---\n\n";
@@ -441,6 +465,7 @@ function useDeepResearch() {
                   getResponseLanguagePrompt(),
                 ].join("\n\n"),
                 experimental_transform: smoothTextStream(smoothTextStreamType),
+                abortSignal: controller.signal,
                 onError: handleError,
               });
             } else {
@@ -459,6 +484,7 @@ function useDeepResearch() {
                   getResponseLanguagePrompt(),
                 ].join("\n\n"),
                 experimental_transform: smoothTextStream(smoothTextStreamType),
+                abortSignal: controller.signal,
                 onError: handleError,
               });
             }
@@ -475,13 +501,15 @@ function useDeepResearch() {
                 getResponseLanguagePrompt(),
               ].join("\n\n"),
               experimental_transform: smoothTextStream(smoothTextStreamType),
+              abortSignal: controller.signal,
               onError: (err) => {
                 taskStore.updateTask(item.query, { state: "failed" });
                 handleError(err);
               },
             });
           }
-          for await (const part of searchResult.fullStream) {
+          try {
+            for await (const part of searchResult.fullStream) {
             if (part.type === "text-delta") {
               thinkTagStreamProcessor.processChunk(
                 part.textDelta,
@@ -517,10 +545,17 @@ function useDeepResearch() {
                     }
                   );
                 }
-              } else if (part.providerMetadata?.openai) {
-                // Fixed the problem that OpenAI cannot generate markdown reference link syntax properly in Chinese context
-                content = content.replaceAll("【", "[").replaceAll("】", "]");
+                } else if (part.providerMetadata?.openai) {
+                  // Fixed the problem that OpenAI cannot generate markdown reference link syntax properly in Chinese context
+                  content = content.replaceAll("【", "[").replaceAll("】", "]");
+                }
               }
+            }
+          } catch (err: any) {
+            if (err.name === 'AbortError') {
+              console.log(`[runSearchTask] Aborted query: ${item.query}`);
+            } else {
+              throw err;
             }
           }
           if (reasoning) console.log(reasoning);
@@ -538,6 +573,13 @@ function useDeepResearch() {
                 .join("\n");
           }
 
+          completedCount++;
+          if (completedCount / queries.length >= 0.8 && !timeoutId) {
+            timeoutId = setTimeout(() => {
+              controller.abort();
+            }, 600000);
+          }
+
           if (content.length > 0) {
             taskStore.updateTask(item.query, {
               state: "completed",
@@ -549,7 +591,7 @@ function useDeepResearch() {
           } else {
             taskStore.updateTask(item.query, {
               state: "failed",
-              learning: "",
+              learning: "Aborted or failed",
               sources: [],
               images: [],
             });
@@ -558,6 +600,8 @@ function useDeepResearch() {
         });
       })
     );
+    if (timeoutId) clearTimeout(timeoutId);
+    setAbortController(null);
   }
 
   async function reviewSearchResult() {
@@ -623,6 +667,14 @@ function useDeepResearch() {
       return queries.length;
     }
     return 0;
+  }
+
+  async function forceFinishAndWriteReport() {
+    abortResearch();
+    // Use setTimeout to allow state to settle before initiating write
+    setTimeout(() => {
+      writeFinalReport();
+    }, 500);
   }
 
   async function writeFinalReport() {
@@ -870,6 +922,8 @@ function useDeepResearch() {
     runSearchTask,
     reviewSearchResult,
     writeFinalReport,
+    abortResearch,
+    forceFinishAndWriteReport,
   };
 }
 
