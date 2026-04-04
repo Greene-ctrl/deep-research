@@ -19,6 +19,7 @@ RUN bash setenv.sh
 
 RUN pnpm build
 
-EXPOSE 3000
+EXPOSE 7860
+ENV PORT=7860
 
 CMD ["pnpm", "start"]

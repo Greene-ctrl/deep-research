@@ -1,9 +1,9 @@
 ---
-title: Deep Research
+title: deepresearch
 colorFrom: gray
 colorTo: yellow
 sdk: docker
-app_port: 3000
+app_port: 7860
 emoji: 📦
 ---
 <div align="center">
