@@ -151,7 +151,7 @@ export const defaultValues: SettingStore = {
   ollamaNetworkingModel: "",
   accessPassword: process.env.NEXT_PUBLIC_ACCESS_PASSWORD || "",
   enableSearch: "1",
-  searchProvider: process.env.NEXT_PUBLIC_SEARXNG_API_BASE_URL ? "searxng" : "model",
+  searchProvider: (process.env.NEXT_PUBLIC_SEARXNG_API_BASE_URL || process.env.NEXT_PUBLIC_SEARXNG_URL) ? "searxng" : "model",
   tavilyApiKey: process.env.NEXT_PUBLIC_TAVILY_API_KEY || "",
   tavilyApiProxy: "",
   tavilyScope: "general",
@@ -164,7 +164,7 @@ export const defaultValues: SettingStore = {
   bochaApiProxy: "",
   braveApiKey: "",
   braveApiProxy: "",
-  searxngApiProxy: process.env.NEXT_PUBLIC_SEARXNG_API_BASE_URL || "",
+  searxngApiProxy: process.env.NEXT_PUBLIC_SEARXNG_API_BASE_URL || process.env.NEXT_PUBLIC_SEARXNG_URL || "",
   searxngScope: "all",
   parallelSearch: 1,
   autoReviewRounds: 0,
@@ -209,8 +209,8 @@ export const useSettingStore = create(
         if (process.env.NEXT_PUBLIC_OPENAI_COMPATIBLE_API_KEY) {
           state.openAICompatibleApiKey = process.env.NEXT_PUBLIC_OPENAI_COMPATIBLE_API_KEY;
         }
-        if (process.env.NEXT_PUBLIC_SEARXNG_API_BASE_URL) {
-          state.searxngApiProxy = process.env.NEXT_PUBLIC_SEARXNG_API_BASE_URL;
+        if (process.env.NEXT_PUBLIC_SEARXNG_API_BASE_URL || process.env.NEXT_PUBLIC_SEARXNG_URL) {
+          state.searxngApiProxy = process.env.NEXT_PUBLIC_SEARXNG_API_BASE_URL || process.env.NEXT_PUBLIC_SEARXNG_URL || "";
           state.searchProvider = "searxng";
         }
         if (process.env.NEXT_PUBLIC_TAVILY_API_KEY) {

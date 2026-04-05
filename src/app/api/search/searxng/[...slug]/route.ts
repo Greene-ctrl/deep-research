@@ -4,7 +4,7 @@ import { SEARXNG_BASE_URL } from "@/constants/urls";
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
-const API_PROXY_BASE_URL = process.env.SEARXNG_API_BASE_URL || SEARXNG_BASE_URL || "http://localhost:8080";
+const API_PROXY_BASE_URL = process.env.SEARXNG_API_BASE_URL || process.env.SEARXNG_URL || SEARXNG_BASE_URL || "http://localhost:8080";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
   const requestId = Math.random().toString(36).substring(7);
