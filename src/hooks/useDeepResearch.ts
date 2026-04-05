@@ -57,7 +57,12 @@ function smoothTextStream(type: "character" | "word" | "line") {
 function handleError(error: unknown) {
   console.error("DeepResearch execution error:", error);
   const errorMessage = parseError(error);
-  toast.error(errorMessage);
+  if (errorMessage === "[TypeError]: Failed to fetch" || errorMessage === "Failed to fetch") {
+    const { mode } = useSettingStore.getState();
+    toast.error(mode === "local" ? "Network Error: Failed to fetch. This is likely a CORS issue. Please open Settings and switch API Request Mode to Server Proxy." : "Failed to connect to server. Please check your network.");
+  } else {
+    toast.error(errorMessage);
+  }
 }
 
 function useDeepResearch() {

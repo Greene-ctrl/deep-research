@@ -46,7 +46,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
     return new NextResponse(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers: responseHeaders,
+      headers: (() => { responseHeaders.set("X-Accel-Buffering", "no"); responseHeaders.set("Cache-Control", "no-cache"); return responseHeaders; })(),
     });
   } catch (error) {
     console.error(`[${requestId}] [Proxy] [Firecrawl] ERROR:`, error);

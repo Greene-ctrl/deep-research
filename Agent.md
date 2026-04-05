@@ -72,3 +72,25 @@ Get run logs (SSE) once the build logs succeed
 curl -N
 -H "Authorization: Bearer <HF_TOKEN>"
 "https://huggingface.co/api/spaces/GraziePrego/deepresearch/logs/run"
+
+---
+
+## OpenAI Compatible Configuration (Blablador)
+
+If you are using a custom OpenAI-Compatible API provider (like `api.helmholtz-blablador.fz-juelich.de`), you must ensure that your browser doesn't block the request. Custom API providers frequently block direct cross-origin browser fetches (CORS restrictions). Therefore:
+
+1. Use **Server Proxy** mode in the Settings box of your App.
+2. In Hugging Face Spaces, you should configure your connection settings natively using **Hugging Face Secrets**. Do **not** hardcode them.
+
+Set the following Secrets in the settings of your Space:
+
+- `BASE_URL`: For example, `https://api.helmholtz-blablador.fz-juelich.de/v1`
+- `BLABLADOR_API_KEY`: Your authentication token
+
+When the frontend performs an operation (like "Start thinking"), it routes through the Server Proxy (`/api/ai/openaicompatible/v1/...`). Our proxy explicitly reads these `BASE_URL` and `BLABLADOR_API_KEY` secrets to establish the connection properly and automatically appends the token to the header!
+
+### About the `Access Password` (ACCESS_PASSWORD secret)
+
+If you configure an `ACCESS_PASSWORD` Hugging Face Secret, your application enters a protected mode where only users who know this password can perform searches or stream text.
+- If you set it in your Space Secrets, **you must also enter the exact same password in the app's Settings UI** for requests to work.
+- If you do **not** set an `ACCESS_PASSWORD` secret, the application remains completely open to the public and relies purely on your stored `BLABLADOR_API_KEY`.

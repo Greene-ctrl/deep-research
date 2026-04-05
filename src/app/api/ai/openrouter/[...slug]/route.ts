@@ -67,7 +67,7 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
     return new NextResponse(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers: responseHeaders,
+      headers: (() => { responseHeaders.set("X-Accel-Buffering", "no"); responseHeaders.set("Cache-Control", "no-cache"); return responseHeaders; })(),
     });
   } catch (error) {
     console.error(`[${requestId}] [Proxy] [OpenRouter] ERROR:`, error);

@@ -1,3 +1,4 @@
+import SWUnregister from "@/components/Internal/SWUnregister";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import ThemeProvider from "@/components/Provider/Theme";
@@ -75,6 +76,7 @@ export default function RootLayout({
       <head>
         {HEAD_SCRIPTS ? <Script id="headscript">{HEAD_SCRIPTS}</Script> : null}
         <Debugger />
+        <SWUnregister />
       </head>
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider

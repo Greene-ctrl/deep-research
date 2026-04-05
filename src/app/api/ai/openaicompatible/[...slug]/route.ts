@@ -4,8 +4,8 @@ import { multiApiKeyPolling } from "@/utils/model";
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
-const API_PROXY_BASE_URL = process.env.OPENAI_COMPATIBLE_API_BASE_URL || "";
-const OPENAI_COMPATIBLE_API_KEY = process.env.OPENAI_COMPATIBLE_API_KEY || "";
+const API_PROXY_BASE_URL = process.env.OPENAI_COMPATIBLE_API_BASE_URL || process.env.BASE_URL || "";
+const OPENAI_COMPATIBLE_API_KEY = process.env.OPENAI_COMPATIBLE_API_KEY || process.env.BLABLADOR_API_KEY || "";
 
 async function handler(req: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
   const requestId = Math.random().toString(36).substring(7);
@@ -71,7 +71,7 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ slug: s
     return new NextResponse(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers: responseHeaders,
+      headers: (() => { responseHeaders.set("X-Accel-Buffering", "no"); responseHeaders.set("Cache-Control", "no-cache"); return responseHeaders; })(),
     });
   } catch (error) {
     console.error(`[${requestId}] [Proxy] [OpenAICompatible] ERROR:`, error);
